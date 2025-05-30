@@ -32,8 +32,9 @@ const validarEspecie = (especie) => {
     }
     return true;
 };
-
+// La funcion acepta un callback como argumento, esta funcion se ejecuta despues de la operacion asincrona.
 const registrarCliente = (callback) => {
+    // Ejecuta la funcion que se le pasa despues de 1.5 segundos
     setTimeout(() => {
         try {
             const nombre = prompt("Ingrese el nombre del cliente:");
@@ -57,6 +58,7 @@ const registrarCliente = (callback) => {
             };
 
             cliente.push(nuevoCliente);
+            // Se llama a la funcion callback. Su primer argumento es para errores, el segundo un mensaje de exito
             callback(null, `Cliente ${nombre} registrado con éxito!`);
         } catch (error) {
             callback(error.message, null);
@@ -124,14 +126,19 @@ const listarTodasMascotas = () => {
 };
 
 const buscarMascotaPorNombre = () => {
+    // Devuelve un nuevo objeto 'Promise'. Una promesa representa el resultado eventual de una operación asíncrona.
+    // El constructor de Promise toma una función con un argumento: 'resolve' (no se usa 'reject' aquí, se resuelve siempre).
     return new Promise((resolve) => {
         setTimeout(() => {
             const nombre = prompt("Ingrese el nombre de la mascota a buscar:");
+            // Filtra el array 'mascotas' para encontrar todas las mascotas cuyo nombre (convertido a minúsculas)
+            // incluya la cadena 'nombre' (también convertida a minúsculas). Esto permite búsquedas parciales.
             const mascotasEncontradas = mascotas.filter(mascota =>
                 mascota.nombre.toLowerCase().includes(nombre.toLowerCase())
             );
 
             if (mascotasEncontradas.length === 0) {
+                // Resuelve la promesa con un mensaje indicando que no se encontraron mascotas.
                 resolve("No se encontraron mascotas con ese nombre.");
                 return;
             }
@@ -146,6 +153,7 @@ const buscarMascotaPorNombre = () => {
     });
 };
 
+// Define una función asíncrona 'actualizarEstadoSaludMascota'. 'async' permite usar 'await' dentro de ella.
 const actualizarEstadoSaludMascota = async () => {
     const nombre = prompt("Ingrese el nombre de la mascota a actualizar:");
     const mascota = mascotas.find(m => m.nombre.toLowerCase() === nombre.toLowerCase());
@@ -153,7 +161,9 @@ const actualizarEstadoSaludMascota = async () => {
     if (!mascota) {
         return "Mascota no encontrada.";
     }
-
+    // 'await' pausa la ejecución de 'actualizarEstadoSaludMascota' hasta que la Promesa se resuelva.
+    // 'new Promise(resolve => setTimeout(resolve, 1000))' crea una promesa que se resuelve después de 1000 ms (1 segundo).
+    // Esto simula una espera (por ejemplo, consulta al veterinario).
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     const nuevoEstado = prompt(`Ingrese nuevo estado de salud: Sano, Enfermo, Tratamiento`);
