@@ -13,7 +13,7 @@ El objetivo principal de este proyecto es demostrar y aplicar conceptos de **asi
 * *Menú principal presentado en una ventana `prompt`.*
     * ![ventana emerjente](/assets/image.png)
 * *Secuencia de `prompts` durante el registro de un nuevo cliente.*
-    * <video controls src="/assets/20250530-0334-11.5728703.mp4" title="Demostración de la aplicación" width="480"></video>
+    * <video controls src="./assets/20250530-0334-11.5728703.mp4" title="Demostración de la aplicación" width="480"></video>
     * *Un mensaje de éxito o error mostrado en la consola después de una operación.*
     * ![mensaje en consola](/assets/image-1.png)
 * *El diálogo `confirm` al intentar eliminar una mascota.*
