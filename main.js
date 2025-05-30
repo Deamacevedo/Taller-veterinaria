@@ -1,147 +1,166 @@
-// const veterinaria = {
-//     nombre,
-//     especie : ["Perro","Gato","otro"],
-//     edad,
-//     peso,
-//     EstadoDeSalud : ["Sano","Enfermo","Tratamiento"]
-// }
+const cliente = [];
+const mascotas = [];
+let idCliente = 1;
+let idMascotas = 1;
+const generarIdCliente = () => idCliente++;
+const generarIdMascotas = () => idMascotas++;
+const validarTexto = (texto) => texto.trim() !== "";
+const validarNumeroPositivo = (num) => !isNaN(num) && Number(num) > 0;
+const estadosValidos = ["Sano", "Enfermo", "Tratamiento"];
+const especiesValidas = ["Perro", "Gato", "Ave", "Reptil", "Otro"];
 
-let mascotas = []
+function registrarCliente() {
+  const nombre = prompt("Nombre:");
+  const cedula = prompt("Cédula:");
+  const telefono = prompt("Teléfono:");
+  const correo = prompt("Correo:");
+
+  if (![nombre, cedula, telefono, correo].every(validarTexto)) {
+    alert("Todos los campos deben ser completados.");
+    return;
+  }
+
+  cliente.push({
+    id: generarIdCliente(),
+    nombre,
+    cedula,
+    telefono,
+    correo
+  });
+
+  alert("Dueño registrado correctamente.");
+}
 
 function registrarMascota() {
-    const nombre = prompt("Ingrese el nombre de la mascota:");
+  const nombre = prompt("Nombre de la mascota:");
+  const especie = prompt("Especie (Perro, Gato, Ave, Reptil, Otro):");
+  const edad = parseInt(prompt("Edad (años):"));
+  const peso = parseFloat(prompt("Peso (kg):"));
+  const estado = prompt("Estado de salud (Sano, Enfermo, Tratamiento):");
+  const cedulaCliente = prompt("Cédula del cliente:");
 
-    const especie = prompt("Ingrese la especie de la mascota (Ej: Perro, Gato):");
+  if (!validarTexto(nombre) || !especiesValidas.includes(especie)) {
+    alert("Datos inválidos.");
+    return;
+  }
 
-    let edad = prompt("Ingrese la edad de la mascota (en años):");
-    let peso = prompt("Ingrese el peso de la mascota (en kg):");
-    let estadoSalud = prompt("Ingrese el estado de salud (sano, enfermo, tratamiento):");
- 
+  if (!validarNumeroPositivo(edad) || !validarNumeroPositivo(peso)) {
+    alert("Edad y peso deben ser positivos.");
+    return;
+  }
 
-    const nuevaMascota = {
-        nombre: nombre,
-        especie: especie,
-        edad: edad,
-        peso: peso,
-        estadoSalud: estadoSalud
-    };
+  if (!estadosValidos.includes(estado)) {
+    alert("Estado de salud no válido.");
+    return;
+  }
 
-    mascotas.push(nuevaMascota);
-    alert('Mascota "' + nombre + '" registrada exitosamente.');
+  const clientem = cliente.find(d => d.cedula === cedulaCliente);
+
+  if (!clientem) {
+    alert("Cliente no encontrado.");
+    return;
+  }
+
+  mascotas.push({
+    id: generarIdMascotas(),
+    nombre,
+    especie,
+    edad,
+    peso,
+    estado,
+    idCliente: clientem.id
+  });
+
+  alert("Mascota registrada.");
 }
 
 function listarMascotas() {
-
-
-    let listaStr = "Mascotas Registradas:\n";
-    for (let i = 0; i < mascotas.length; i++) {
-        let mascota = mascotas[i];
-        listaStr += (i + 1) + ". Nombre: " + mascota.nombre + "\n";
-        listaStr += "   Especie: " + mascota.especie + "\n";
-        listaStr += "   Edad: " + mascota.edad + " años\n";
-        listaStr += "   Peso: " + mascota.peso + " kg\n";
-        listaStr += "   Estado de Salud: " + mascota.estadoSalud + "\n";
-        listaStr += "-------------------------\n";
-    }
-    alert(listaStr);
+  console.log("Listado de mascotas:");
+  mascotas.forEach(m => {
+    console.log(`${m.nombre} (${m.especie}) - Estado: ${m.estado}`);
+  });
 }
 
 function buscarMascota() {
-
-    const nombreBusqueda = prompt("Ingrese el nombre de la mascota a buscar:");
-
-    const encontradas = mascotas.filter(mascota => mascota.nombre.includes(nombreBusqueda));
-
-    let resultadoStr = `🔍 Resultados para "${nombreBusqueda}" 🔍\n-------------------------\n`;
-    encontradas.forEach(mascota => {
-        resultadoStr += "Nombre: " + mascota.nombre + "\n";
-        resultadoStr += "Especie: " + mascota.especie + "\n";
-        resultadoStr += "Edad: " + mascota.edad + " años\n";
-        resultadoStr += "Peso: " + mascota.peso + " kg\n";
-        resultadoStr += "Estado de Salud: " + mascota.estadoSalud + "\n";
-        resultadoStr += "-------------------------\n";
-    });
-    alert(resultadoStr);
+  const nombre = prompt("Nombre de la mascota a buscar:");
+  const mascota = mascotas.find(m => m.nombre.toLowerCase() === nombre.toLowerCase());
+  if (mascota) {
+    console.log("Mascota encontrada:", mascota);
+  } else {
+    alert("No se encontró la mascota.");
+  }
 }
 
-function actualizarEstadoSalud() {
+function actualizarEstadoMascota() {
+  const nombre = prompt("Nombre de la mascota a actualizar:");
+  const nuevoEstado = prompt("Nuevo estado (Sano, Enfermo, Tratamiento):");
 
-    const nombreBusqueda = prompt("Ingrese el nombre de la mascota cuyo estado de salud desea actualizar:");
+  if (!estadosValidos.includes(nuevoEstado)) {
+    alert("Estado no válido.");
+    return;
+  }
 
-    const mascotaEncontrada = mascotas.find(mascota => mascota.nombre === nombreBusqueda);
+  const mascota = mascotas.find(m => m.nombre.toLowerCase() === nombre.toLowerCase());
 
-    let nuevoEstadoSalud;
-    while (true) {
-        nuevoEstadoSalud = prompt(`Estado de salud actual de ${mascotaEncontrada.nombre}: ${mascotaEncontrada.estadoSalud}\nIngrese el nuevo estado de salud (Sano, Enfermo, En tratamiento):`);
-        if (["sano", "enfermo", "tratamiento"].includes(nuevoEstadoSalud)) {
-            mascotaEncontrada.estadoSalud = nuevoEstadoSalud.charAt(0)  + nuevoEstadoSalud.slice(1);
-            alert('El estado de salud de "' + mascotaEncontrada.nombre + '" ha sido actualizado a "' + mascotaEncontrada.estadoSalud + '".');
-            break;
-        }
-        alert("Estado de salud inválido. Use Sano, Enfermo o Tratamiento.");
-    }
+  if (mascota) {
+    mascota.estado = nuevoEstado;
+    alert("Estado actualizado.");
+  } else {
+    alert("Mascota no encontrada.");
+  }
 }
 
 function eliminarMascota() {
+  const nombre = prompt("Nombre de la mascota a eliminar:");
+  const index = mascotas.findIndex(m => m.nombre.toLowerCase() === nombre.toLowerCase());
 
-    const nombreBusqueda = prompt("Ingrese el nombre de la mascota que desea eliminar:");
+  if (index >= 0) {
+    mascotas.splice(index, 1);
+    alert("Mascota eliminada.");
+  } else {
+    alert("No se encontró la mascota.");
+  }
+}
 
-    const indiceMascota = mascotas.findIndex(mascota => mascota.nombre.toLowerCase() === nombreBusqueda);
+function verMascotasPorCedula() {
+  const cedula = prompt("Cédula del dueño:");
+  const clientems = cliente.find(d => d.cedula === cedula);
 
+  if (!clientems) {
+    alert("Dueño no encontrado.");
+    return;
+  }
 
-    const confirmacion = confirm('¿Está seguro de que desea eliminar a "' + mascotas[indiceMascota].nombre + '"?');
-    if (confirmacion) {
-        const mascotaEliminada = mascotas.splice(indiceMascota, 1);
-        alert('Mascota "' + mascotaEliminada[0].nombre + '" eliminada exitosamente.');
-    } else {
-        alert("Eliminación cancelada.");
-    }
+  const mascotasDelCliente = mascotas.filter(m => m.idCliente === clientems.id);
+
+  if (mascotasDelCliente.length === 0) {
+    alert("Este dueño no tiene mascotas registradas.");
+  } else {
+    console.log(`Mascotas de ${clientems.nombre}:`);
+    mascotasDelCliente.forEach(m => console.log(`${m.nombre} - ${m.estado}`));
+  }
 }
 
 function menu() {
-    let opcion = "";
-    while (opcion !== "6") {
-        opcion = prompt(
-            " Menú Veterinaria \n\n" +
-            "1. Registrar nueva mascota\n" +
-            "2. Listar todas las mascotas\n" +
-            "3. Buscar mascota por nombre\n" +
-            "4. Actualizar estado de salud de una mascota\n" +
-            "5. Eliminar mascota por nombre\n" +
-            "6. Salir del programa\n\n" +
-            "Por favor, ingrese el número de la opción deseada:"
-        );
+  let opcion;
 
-        if (opcion === null) { // Por si el usuario cancela el prompt
-            opcion = "6"; 
-        }
+  do {
+    opcion = prompt(
+      `Deam pets\n\n1. Registrar cliente\n2. Registrar mascota\n3. Listar mascotas\n4. Buscar mascota\n5. Actualizar estado mascota\n6. Eliminar mascota\n7. Ver mascotas por cliente\n0. Salir`
+    );
 
-        switch (opcion) {
-            case "1":
-                registrarMascota();
-                break;
-            case "2":
-                listarMascotas();
-                break;
-            case "3":
-                buscarMascota();
-                break;
-            case "4":
-                actualizarEstadoSalud();
-                break;
-            case "5":
-                eliminarMascota();
-                break;
-            case "6":
-                alert("Gracias por usar el sistema de gestión veterinaria. ¡Hasta pronto!");
-                break;
-            default:
-                if (opcion !== null) { 
-                    alert("Opción no válida. Por favor, intente de nuevo.");
-                }
-                break;
-        }
+    switch (opcion) {
+      case "1": registrarCliente(); break;
+      case "2": registrarMascota(); break;
+      case "3": listarMascotas(); break;
+      case "4": buscarMascota(); break;
+      case "5": actualizarEstadoMascota(); break;
+      case "6": eliminarMascota(); break;
+      case "7": verMascotasPorCedula(); break;
+      case "0": alert("¡Hasta luego!"); break;
+      default: alert("Opción inválida."); break;
     }
+  } while (opcion !== "0");
 }
 
 menu();
