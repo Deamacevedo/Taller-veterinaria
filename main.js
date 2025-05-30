@@ -198,13 +198,13 @@ const obtenerMascotasPorCedulaCliente = async () => {
         return "No se encontró un cliente con esa cédula.";
     }
 
-    const mascotasDueno = mascotas.filter(mascota => mascota.idCliente === cliente.id);
-    if (mascotasDueno.length === 0) {
+    const mascotasCliente = mascotas.filter(mascota => mascota.idCliente === cliente.id);
+    if (mascotasCliente.length === 0) {
         return `El cliente ${cliente.nombre} no tiene mascotas registradas.`;
     }
 
-    return mascotasDueno.map(mascota =>
-        `Nombre: ${mascota.nombre}, Especie: ${mascota.especie}, Edad: ${mascota.edad} años, Salud: ${mascota.estadoSalud}, Dueño: ${clientem ? clientem.nombre : 'Desconocido'}`
+    return mascotasCliente.map(mascota =>
+        `Nombre: ${mascota.nombre}, Especie: ${mascota.especie}, Edad: ${mascota.edad} años, Salud: ${mascota.estadoSalud}, Dueño: ${cliente ? cliente.nombre : 'Desconocido'}`
     ).join('\n');
 };
 
